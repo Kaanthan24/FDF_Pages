@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DIY Repair Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #f4f4f4;
+    }
+    h1 {
+      text-align: center;
+    }
+    form {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    textarea, input[type="file"] {
+      width: 100%;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+    button {
+      padding: 0.8rem 1.5rem;
+      margin-top: 1rem;
+      background-color: #2d89ef;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #response {
+      white-space: pre-wrap;
+      background: #e0f0ff;
+      padding: 1rem;
+      margin-top: 2rem;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>??? DIY Repair Assistant</h1>
+  <form id="repairForm">
+    <label for="text">Describe the problem:</label>
+    <textarea id="text" name="text" rows="6" required></textarea>
+
+    <label for="image">Upload an image (optional):</label>
+    <input type="file" id="image" name="image" accept="image/png, image/jpeg" />
+
+    <button type="submit">Analyze</button>
+  </form>
+
+  <div id="response"></div>
+
+  <script>
+    const form = document.getElementById('repairForm');
+    const responseDiv = document.getElementById('response');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      responseDiv.textContent = "Analyzing, please wait...";
+
+      const formData = new FormData();
+      formData.append("text", document.getElementById("text").value);
+      const imageFile = document.getElementById("image").files[0];
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
+
+      try {
+        const res = await fetch("https://diy-repair-backend.onrender.com/analyze", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!res.ok) {
+          const error = await res.json();
+          responseDiv.textContent = `? Error: ${error.detail || res.statusText}`;
+          return;
+        }
+
+        const data = await res.json();
+        responseDiv.innerHTML = data.response;
+      } catch (err) {
+        console.error(err);
+        responseDiv.textContent = "Something went wrong. Try again later.";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -81,15 +81,15 @@
 
         if (!res.ok) {
           const error = await res.json();
-          responseDiv.textContent = `? Error: ${error.detail || res.statusText}`;
+          responseDiv.textContent = `⚠️ Error: ${error.detail || res.statusText}`;
           return;
         }
 
         const data = await res.json();
-        responseDiv.innerHTML = data.response;
+        responseDiv.innerHTML = "💡 Repair Suggestion:\n" + data.reply;
       } catch (err) {
         console.error(err);
-        responseDiv.textContent = "Something went wrong. Try again later.";
+        responseDiv.textContent = "❌ Backend not reachable or timed out. Try again later.";
       }
     });
   </script>

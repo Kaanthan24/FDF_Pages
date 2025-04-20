@@ -86,7 +86,7 @@
         }
 
         const data = await res.json();
-        responseDiv.innerHTML = "💡 Repair Suggestion:\n" + data.reply;
+        responseDiv.innerHTML = data.reply;
       } catch (err) {
         console.error(err);
         responseDiv.textContent = "❌ Backend not reachable or timed out. Try again later.";
